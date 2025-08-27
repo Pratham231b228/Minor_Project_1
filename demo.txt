@@ -1,1 +1,2 @@
-So this is a demo file just to check the commit.
+Langchain:
+Langchain is an open-source framework designed to streamline the development of applications powered by large language models(LLM's).It's primary value lies in providing modular components and integrtion tools that allows developers to build complex, production-ready systems without reinventing foundational elements.
