@@ -1,0 +1,36 @@
+ 1. Software Requirements
+
+•	Python 3.9+ (main programming language)
+
+ Libraries:
+
+•	langchain → to connect GPT-like models and tools
+
+•	openai → if you are using OpenAI’s GPT models
+
+•	yfinance or alpha_vantage → to fetch stock data
+
+•	pandas, numpy → for data handling and analysis
+
+•	matplotlib, seaborn, plotly → for visualization
+
+•	scikit-learn → for stock prediction models (Linear Regression, etc.)
+
+•	streamlit or flask → if you want a simple app interface
+
+2. Hardware Requirements
+
+•	A normal PC or laptop (8GB RAM recommended, since large models take memory).
+
+•	Internet connection (needed for API calls).
+
+•	If you want to train large models, GPU (NVIDIA) helps, but for your minor project, CPU is enough.
+
+
+3. Other Requirements
+
+•	API keys (from Alpha Vantage, Yahoo Finance, or OpenAI if using GPT).
+
+•	GitHub for version control and project backup.
+
+•	VS Code / PyCharm as your IDE.
