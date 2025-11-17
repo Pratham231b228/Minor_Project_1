@@ -1,73 +1,18 @@
-aiohappyeyeballs @ file:///absolute/path/to/package
-aiohttp @ file:///absolute/path/to/package
-aiosignal @ file:///absolute/path/to/package
-annotated-types @ file:///absolute/path/to/package
-anyio @ file:///absolute/path/to/package
-async-timeout @ file:///absolute/path/to/package
-attrs @ file:///absolute/path/to/package
-Brotli @ file:///absolute/path/to/package
-certifi @ file:///absolute/path/to/package
-cffi @ file:///absolute/path/to/package
-charset-normalizer @ file:///absolute/path/to/package
-dataclasses-json==0.6.7
-distro==1.9.0
-exceptiongroup @ file:///absolute/path/to/package
-frozenlist @ file:///absolute/path/to/package
-greenlet @ file:///absolute/path/to/package
-h11 @ file:///absolute/path/to/package
-h2 @ file:///absolute/path/to/package
-hpack @ file:///absolute/path/to/package
-httpcore @ file:///absolute/path/to/package
-httpx @ file:///absolute/path/to/package
-httpx-sse==0.4.0
-hyperframe @ file:///absolute/path/to/package
-idna @ file:///absolute/path/to/package
-jiter==0.9.0
-jsonpatch @ file:///absolute/path/to/package
-jsonpointer==2.0
-langchain @ file:///absolute/path/to/package
-langchain-community==0.3.20
-langchain-core @ file:///absolute/path/to/package
-langchain-openai==0.3.10
-langchain-text-splitters @ file:///absolute/path/to/package
-langchainhub==0.1.21
-langgraph==0.3.20
-langgraph-checkpoint==2.0.23
-langgraph-prebuilt==0.1.6
-langgraph-sdk==0.1.59
-langsmith @ file:///absolute/path/to/package
-marshmallow==3.26.1
-multidict @ file:///absolute/path/to/package
-mypy-extensions==1.0.0
-numpy==1.26.4
-openai==1.68.2
-orjson @ file:///absolute/path/to/package
-ormsgpack==1.9.0
-packaging @ file:///absolute/path/to/package
-polygon-api-client==1.14.4
-propcache @ file:///absolute/path/to/package
-pycparser @ file:///absolute/path/to/package
-pydantic @ file:///absolute/path/to/package
-pydantic-settings==2.8.1
-pydantic_core @ file:///absolute/path/to/package
-PySocks @ file:///absolute/path/to/package
-python-dotenv==1.1.0
-PyYAML @ file:///absolute/path/to/package
-regex==2024.11.6
-requests @ file:///absolute/path/to/package
-requests-toolbelt @ file:///absolute/path/to/package
-setuptools==75.8.0
-sniffio @ file:///absolute/path/to/package
-SQLAlchemy @ file:///absolute/path/to/package
-tenacity @ file:///absolute/path/to/package
-tiktoken==0.9.0
-tqdm==4.67.1
-types-requests==2.32.0.20250306
-typing-inspect==0.9.0
-typing_extensions @ file:///absolute/path/to/package
-urllib3 @ file:///absolute/path/to/package
-websockets==14.2
-wheel==0.45.1
-xxhash==3.5.0
-yarl @ file:///absolute/path/to/package
-zstandard @ file:///absolute/path/to/package
+yfinance
+pandas
+numpy
+scikit-learn
+xgboost
+joblib
+gradio
+plotly
+python-dotenv
+requests
+
+# LangChain & Gemini
+langchain
+langchain-google-genai
+google-generativeai==0.7.0
+
+# Pydantic (v1 because you're using pydantic.v1)
+pydantic==1.10.13
