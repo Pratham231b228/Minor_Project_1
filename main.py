@@ -10,19 +10,19 @@ from dotenv import load_dotenv
 import os
 from datetime import datetime, timedelta
 import re
-import joblib #  ADDED: To load the model
+import joblib # ADDED: To load the model
 
-#  Machine Learning Imports
-from xgboost import XGBClassifier 
+# Machine Learning Imports
+from xgboost import XGBClassifier
 # We don't need train_test_split or precision_score here anymore
-# from sklearn.model_selection import train_test_split 
+# from sklearn.model_selection import train_test_split
 # from sklearn.metrics import precision_score
 
 # LangChain Imports
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
-from pydantic.v1 import Field, BaseModel 
+from pydantic.v1 import Field, BaseModel
 
 # --- Gemini Safety Settings ---
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
@@ -35,7 +35,7 @@ GEMINI_API_KEY = os.getenv("GOOGLE_API_KEY")
 POLYGON_API_KEY = os.getenv("POLYGON_API_KEY")
 
 if not GEMINI_API_KEY:
-    raise ValueError("❌ GOOGLE_API_KEY not found in .env file.")
+    raise ValueError("GOOGLE_API_KEY not found in .env file.")
 
 # -------------------------
 # Load Pre-trained ML Model
@@ -44,13 +44,13 @@ if not GEMINI_API_KEY:
 MODEL_FILE = "stock_xgb_model.joblib"
 if not os.path.exists(MODEL_FILE):
     raise FileNotFoundError(
-        f"❌ Model file '{MODEL_FILE}' not found. "
+        f"Model file '{MODEL_FILE}' not found. "
         "Please run train_model.py first to create it."
     )
 try:
     # Load the model ONCE when the app starts
     PRE_TRAINED_MODEL = joblib.load(MODEL_FILE)
-    print(f" Pre-trained model '{MODEL_FILE}' loaded successfully.")
+    print(f"Pre-trained model '{MODEL_FILE}' loaded successfully.")
 except Exception as e:
     raise Exception(f"Error loading model: {e}")
 
@@ -73,14 +73,14 @@ llm = ChatGoogleGenerativeAI(
 )
 
 # ============================================================
-#  XGBOOST PREDICTOR (The "Quant")
+# XGBOOST PREDICTOR (The "Quant")
 # ============================================================
 
 class StockPredictor:
     def __init__(self, ticker):
         self.ticker = ticker
         # Use the globally loaded, pre-trained model
-        self.model = PRE_TRAINED_MODEL 
+        self.model = PRE_TRAINED_MODEL
         self.data = None
 
     def fetch_data(self, period="2y"):
@@ -109,10 +109,10 @@ class StockPredictor:
         df["RSI"] = 100 - (100 / (1 + rs))
         
         # 3. Trend & Volatility
-        df["Trend"] = df["Close"].shift(1) < df["Close"] 
+        df["Trend"] = df["Close"].shift(1) < df["Close"]
         df["Volatility"] = df["Close"].pct_change().rolling(10).std()
         
-        # 4. MACD 
+        # 4. MACD
         exp1 = df['Close'].ewm(span=12, adjust=False).mean()
         exp2 = df['Close'].ewm(span=26, adjust=False).mean()
         df['MACD'] = exp1 - exp2
@@ -133,11 +133,11 @@ class StockPredictor:
         features = ["SMA_10", "SMA_50", "RSI", "Volatility", "MACD", "Open", "High", "Low", "Close", "Volume"]
         
         # We only need the most recent day to make a prediction
-        test_row = df.iloc[[-1]] 
+        test_row = df.iloc[[-1]]
 
         # --- NO TRAINING ---
         # We just predict using the pre-trained model
-        preds = self.model.predict_proba(test_row[features]) 
+        preds = self.model.predict_proba(test_row[features])
         prob_buy = preds[0][1] # Probability of "Up"
 
         latest = test_row.iloc[0]
@@ -145,19 +145,19 @@ class StockPredictor:
         signal = "HOLD/NEUTRAL"
         confidence = prob_buy
 
-        if prob_buy > 0.55: 
+        if prob_buy > 0.55:
             signal = "BUY"
             confidence = prob_buy
-        elif prob_buy < 0.45: 
+        elif prob_buy < 0.45:
             signal = "SELL/AVOID"
-            confidence = 1.0 - prob_buy 
+            confidence = 1.0 - prob_buy
         else:
             confidence = 1.0 - abs(prob_buy - 0.5)
 
         return {
             "signal": signal,
             "confidence": round(confidence * 100, 1),
-            "raw_buy_prob": prob_buy, 
+            "raw_buy_prob": prob_buy,
             "rsi": round(latest["RSI"], 2),
             "close": round(latest["Close"], 2),
             "sma_50": round(latest["SMA_50"], 2),
@@ -172,7 +172,7 @@ def detect_market(ticker):
     return "INDIA" if ticker.upper().endswith((".NS", ".BO")) else "US"
 
 # ----------------------------------------------------------------
-# 🗑️ REMOVED get_stock_history() - We will reuse predictor.data
+# REMOVED get_stock_history() - We will reuse predictor.data
 # ----------------------------------------------------------------
 
 # ============================================================
@@ -181,7 +181,7 @@ def detect_market(ticker):
 
 # --- Chain 1: Explain the Signal ---
 hybrid_template = """
-You are a senior financial analyst. 
+You are a senior financial analyst.
 An XGBoost Machine Learning model has just analyzed the technical indicators for {ticker}.
 
 Here is the data from the model:
@@ -203,7 +203,7 @@ Format:
 """
 
 hybrid_prompt = PromptTemplate(
-    input_variables=["ticker", "price", "ml_signal", "confidence", "rsi", "macd", "sma_50"], 
+    input_variables=["ticker", "price", "ml_signal", "confidence", "rsi", "macd", "sma_50"],
     template=hybrid_template
 )
 hybrid_chain = LLMChain(llm=llm, prompt=hybrid_prompt)
@@ -219,7 +219,7 @@ Return ONLY a comma-separated list of tickers. Do not add text.
 Example Output: MSFT, ORCL, IBM
 """
 candidate_prompt = PromptTemplate(
-    input_variables=["ticker"], 
+    input_variables=["ticker"],
     template=candidate_template
 )
 candidate_chain = LLMChain(llm=llm, prompt=candidate_prompt)
@@ -237,13 +237,13 @@ def financial_agent(ticker_input):
     data_fetched = predictor.fetch_data(period="2y")
     
     if not data_fetched:
-        return f" Could not fetch historical data for {ticker}.", None
+        return f"Could not fetch historical data for {ticker}.", None
 
     # Use the FAST prediction function
-    ml_result = predictor.get_prediction() 
+    ml_result = predictor.get_prediction()
     
     if not ml_result:
-        return f"⚠ Not enough data to run XGBoost analysis for {ticker}.", None
+        return f"Not enough data to run XGBoost analysis for {ticker}.", None
 
     # 2. Pass ML Results to LangChain LLM (Explanation)
     try:
@@ -258,7 +258,7 @@ def financial_agent(ticker_input):
         )
         ai_text = response.strip()
     except Exception as e:
-        ai_text = f"❌ LangChain Error: {str(e)}"
+        ai_text = f"LangChain Error: {str(e)}"
 
     # 3. Intelligent Alternative Search (If Main is SELL/AVOID)
     alt_text = ""
@@ -272,12 +272,12 @@ def financial_agent(ticker_input):
             
             # This loop is now FAST because get_prediction() is fast
             for cand in candidates:
-                if ".NS" in ticker and "." not in cand: 
-                    cand += ".NS" 
+                if ".NS" in ticker and "." not in cand:
+                    cand += ".NS"
                 
                 p = StockPredictor(cand)
                 # Fetch only 100 days for alternatives (MUCH FASTER)
-                if p.fetch_data(period="100d"): 
+                if p.fetch_data(period="100d"):
                     # Use the FAST prediction function
                     res = p.get_prediction()
                     if res:
@@ -286,17 +286,20 @@ def financial_agent(ticker_input):
                             best_alt = (cand, res)
                         
                         if res["signal"] == "BUY" and res["confidence"] > 70:
-                            break 
+                            break
             
             if best_alt:
                 cand_ticker, res = best_alt
-                icon = "✅" if res["signal"] == "BUY" else "⚠"
+                icon = ""
+                if res["signal"] == "BUY": icon = ""
+                else: icon = ""
+                
                 msg = "Stronger technical setup found." if res["signal"] == "BUY" else "Best available alternative (sector is weak)."
                 
                 alt_text = f"""
 \n---
-** Verified Alternative: {cand_ticker}**
-{icon} **Model Signal:** {res['signal']} (Confidence: {res['confidence']}%)
+**Verified Alternative: {cand_ticker}**
+**Model Signal:** {res['signal']} (Confidence: {res['confidence']}%)
 *Reasoning:* {msg} This stock was selected by checking {len(candidates)} AI-suggested candidates against the XGBoost model.
 """
             else:
@@ -307,9 +310,9 @@ def financial_agent(ticker_input):
             alt_text = f"\n\n---\n*Error finding alternative: {str(e)}*"
 
     # 4. Format Output
-    icon = "⚖"
-    if ml_result["signal"] == "BUY": icon = "✅"
-    elif "SELL" in ml_result["signal"]: icon = "🔻"
+    icon = ""
+    if ml_result["signal"] == "BUY": icon = ""
+    elif "SELL" in ml_result["signal"]: icon = ""
 
     out = f"""
 ### {icon} {ml_result['signal']} (Confidence: {ml_result['confidence']}%)
@@ -326,7 +329,7 @@ def financial_agent(ticker_input):
 """
 
     # 5. Chart Generation
-    #  OPTIMIZATION: Reuse the data we already fetched
+    # OPTIMIZATION: Reuse the data we already fetched
     fig = None
     try:
         # Get the last 90 days from the data we already have
