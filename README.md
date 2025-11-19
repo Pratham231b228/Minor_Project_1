@@ -4,10 +4,9 @@ Repository for Minor Project
 
 This project is a **multi-functional AI utility app** built using **Python** and **Gradio**, designed to demonstrate the capabilities of AI and interactive dashboards.  
 The project currently includes:  
-1. **Calculator** – Simple math calculations.  
-2. **Summarizer** – Summarizes long text using HuggingFace BART.  
-3. **Financial News** – Placeholder tab showing news about a company.  
-4. **AI Agent** – Placeholder for a future AI-powered financial agent using LangChain.  
+1. **Summarizer** – Summarizes long text using HuggingFace BART.  
+2. **Financial News** – Placeholder tab showing news about a company.  
+3. **AI Agent** – Placeholder for a future AI-powered financial agent using LangChain.  
 
 ---
 
