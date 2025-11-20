@@ -366,7 +366,7 @@ def financial_agent(ticker_input):
     return out, fig
 
 # ============================================================
-# GRADIO UI (No changes needed)
+# GRADIO UI 
 # ============================================================
 
 with gr.Blocks(theme=gr.themes.Soft(), title="Hybrid AI Financial Agent") as iface:
